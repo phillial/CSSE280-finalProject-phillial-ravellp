@@ -10,3 +10,8 @@ body {
 .page-container {
     margin-top: 75px;
 }
+
+
+.label {
+    font-weight: bold;
+}

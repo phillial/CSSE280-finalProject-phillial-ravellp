@@ -4,6 +4,9 @@ body {
 
 .navbar {
     background-color: #94FCFE;
+}
+
+.navbar > .navbar-brand {
     color: black;
 }
 
@@ -15,3 +18,8 @@ body {
 .label {
     font-weight: bold;
 }
+
+.btn {
+    background-color: #ddd;
+}
+

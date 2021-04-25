@@ -1,10 +1,10 @@
 body {
-    background: #DDDDDD;
+    background-color: white;
 }
 
 .navbar {
-    background-color: #800000;
-    color: white;
+    background-color: #94FCFE;
+    color: black;
 }
 
 .page-container {

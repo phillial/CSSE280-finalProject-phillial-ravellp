@@ -1,14 +1,14 @@
 var rhit = rhit || {};
 
-rhit.FB_COLLECTION_PERSONALINFORMATION = "PhotoBucket";
-rhit.FB_KEY_FIRSTNAME = "";
-rhit.FB_KEY_LASTNAME = "";
-rhit.FB_KEY_EMAIL = "";
+rhit.FB_COLLECTION_PERSONALINFORMATION = "PersonalInformation";
+rhit.FB_KEY_FIRSTNAME = "FirstName";
+rhit.FB_KEY_LASTNAME = "LastName";
+rhit.FB_KEY_EMAIL = "email";
 rhit.FB_KEY_VACCINE = "";
-rhit.FB_KEY_ADDRESS = "";
-rhit.FB_KEY_PHONENUMBER = "";
-rhit.FB_KEY_FIRSTDOSEDATE = "";
-rhit.FB_KEY_SECONDDOSEDATE = "";
+rhit.FB_KEY_ADDRESS = "address";
+rhit.FB_KEY_PHONENUMBER = "phoneNumber";
+rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
+rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
 
 rhit.fbPhotoBucketManager = null;
 rhit.fbSinglePhotoManager = null;
@@ -375,6 +375,32 @@ rhit.initializePage = function() {
 	}
 }
 
+rhit.displayFormData = function(){
+	var firstName = document.getElementById("fname").value ; 
+	var lastName = document.getElementById("lname").value ; 
+	var email = document.getElementById("email").value ;
+	var vaccineName = document.getElementById("vaccineName").value ;
+	var address =document.getElementById("address").value  ; 
+	var firstDoseDate = document.getElementById("firstDate").value ; 
+	var firstDoseTime = document.getElementById("firstDoseTime").value ; 
+	var secondDoseDate = document.getElementById("secondDate").value ; 
+	//var secondDoseTime = document.getElementById("secondTime").value ; 
+	var phoneNumber = document.getElementById("phone").value ; 
+	var accessToPhone = document.getElementById("yesPhone").value ;
+	var accessToCalendar = document.getElementById("noCalendar").value ;  
+	console.log(firstName)
+	console.log(lastName)
+	console.log(email)
+	console.log(vaccineName)
+	console.log(address)
+	console.log(firstDoseDate)
+	console.log(firstDoseTime)
+	console.log(secondDoseDate)
+	//console.log(secondDoseTime)
+	console.log(phoneNumber)
+	console.log(accessToPhone)
+	console.log(accessToCalendar)
+}
 
 /* Main */
 /** function and class syntax examples */
@@ -387,6 +413,7 @@ rhit.main = function () {
 		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
+	rhit.displayFormData();
 };
 
 rhit.main();

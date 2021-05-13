@@ -100,7 +100,7 @@ rhit.FormPageController = class {
 // }
 
 
-rhit.FbPhotoBucketManager = class {
+rhit.FbVaccineManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
@@ -284,10 +284,10 @@ rhit.startFirebaseUI = function () {
 	var uiConfig = {
 		signInSuccessUrl: '/',
 		signInOptions: [
-			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+			// firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 			firebase.auth.EmailAuthProvider.PROVIDER_ID,
-			firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-			firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+			// firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+			// firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
 		],
 	};
 
@@ -317,22 +317,15 @@ rhit.FbAuthManager = class {
 		});
 	}
 	signIn() {
-		// once again, do we want rosefire?
-		Rosefire.signIn("2b1a3a21-a5ad-4f0c-b1a3-256bbf83e6f2", (err, rfUser) => {
-			if (err) {
-				console.log("Rosefire error!", err);
-				return;
-			}
-			console.log("Rosefire success!", rfUser);
-			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				if (errorCode === 'auth/invalid-custom-token') {
-					alert('The token you provided is not valid.');
-				} else {
-					console.error("Custom auth error", errorCode, errorMessage);
-				}
-			});
+		var email = document.getElementById("exampleInputEmail1").value; 
+		var password = document.getElementById("exampleInputPassword1").value; 
+		console.log(email + password)
+		firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log(errorCode);
+			console.log(errorMessage);
 		});
 	}
 

@@ -391,6 +391,7 @@ rhit.initializePage = function () {
 }
 
 rhit.displayFormData = function(){
+	
 	var firstName = document.getElementById("fname").value ; 
 	var lastName = document.getElementById("lname").value ; 
 	var email = document.getElementById("email").value ;
@@ -399,7 +400,7 @@ rhit.displayFormData = function(){
 	var firstDoseDate = document.getElementById("firstDate").value ; 
 	var firstDoseTime = document.getElementById("firstDoseTime").value ; 
 	var secondDoseDate = document.getElementById("secondDate").value ; 
-	//var secondDoseTime = document.getElementById("secondTime").value ; 
+	var secondDoseTime = document.getElementById("secondTime").value ; 
 	var phoneNumber = document.getElementById("phone").value ; 
 	var accessToPhone = document.getElementById("yesPhone").value ;
 	var accessToCalendar = document.getElementById("noCalendar").value ;  
@@ -428,7 +429,7 @@ rhit.main = function () {
 		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
-	rhit.displayFormData();
+	
 };
 
 rhit.main();

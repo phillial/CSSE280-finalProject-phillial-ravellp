@@ -16,70 +16,22 @@
   </nav>
   <div id="formPage" class="container page-container">
 
-    <!-- <form id="garbage" > commenting this out cause I dont think that this needs to actually BE a form
-      <label for="fname">First Name</label>
-      <input type="text" id="fname" name="firstname" placeholder="Your name..">
-      <br>
-      <label for="lname">Last Name</label>
-      <input type="text" id="lname" name="lastname" placeholder="Your last name..">
-      <br>
-      <label for="email">email</label>
-      <input type="email" id="email" name="email" placeholder="corruptnolagovernor@deadla.com">
-      <br>
-      <label for="vaccineName" id="vaccineName">Vaccine Name</label>
-      <select > //drop down not showing
-        <select name="typeOfVaccine" id="vaccineType">
-          <option value="volvo">Pfizer</option>
-          <option value="saab">Moderna</option>
-        </select>
-      <br>
-      <label for="address">Address:</label>
-      <input type="text" id="address"></input>
-      <br>
-      <label for="firstDoseDate" name="firstDoseDate">First Dose Date:</label>
-      <input type="date" id="firstDate" name="firstDate">
-      <input type="time" id="firstDoseTime" name="firstDoseTime">
-      <br>
-      <label for="secondDoseDate" name= "secondDoseDate" id="second dose date">Second Dose Date</label>
-      <input type="date" id="firstDate" name="firstDate">
-      <input type="time" id="secondDoseTime" name="secondDoseTime">
-      <br>
-      <label for="phoneNumber" name="phoneNumber">Phone number</label>
-      <input type="tel" id="phone" name ="phone">
-      <br>
-      <label for="phoneAccess" name="phoneAccess">Do you want access to your phone?</label>
-      <input type="radio" id="yesPhone" name="yesPhone" value="yes">
-      <label for="yesPhone">Yes</label>
-      <input type="radio" id="noPhone" name="noPhone" value="no">
-      <label for="noPhone">No</label>
-      <br>
-      <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar</label>
-      <input type="radio" id="yesCalendar" name="yesCalendar" value="yes">
-      <label for="yesCalendar" >Yes</label>
-      <input type="radio" id="noCalendar" name="noCalendar" value="no">
-      <label for="noCalendar">No</label>
-      <br>
-      <label for="vaccineCardPicture">Take a photo of your vaccine card</label>
-      <input type="image" id="vaccineCardPicture">
-      <br>
-
-      <input type="submit" value="Submit">
-    </form> -->
-
-    <label for="fname">First Name</label>
+    
+    <label for="fname">First Name:</label>
     <input type="text" id="fname" name="firstname" placeholder="Your name..">
     <br>
-    <label for="lname">Last Name</label>
+    <label for="lname">Last Name:</label>
     <input type="text" id="lname" name="lastname" placeholder="Your last name..">
     <br>
-    <label for="email">email</label>
+    <label for="email">Email:</label>
     <input type="email" id="email" name="email" placeholder="corruptnolagovernor@deadla.com">
     <br>
-    <label for="vaccineName" id="vaccineName">Vaccine Name</label>
-    <select> //drop down not showing
-      <select name="typeOfVaccine" id="vaccineType">
-        <option value="volvo">Pfizer</option>
-        <option value="saab">Moderna</option>
+    <label for="vaccineName" id="vaccineName">Vaccine Name:</label>
+    
+   
+      <select name = "vaccineType">
+        <option value = "Pfizer" >Pfizer</option>
+        <option value = "Moderna">Moderna</option>
       </select>
       <br>
       <label for="address">Address:</label>
@@ -89,31 +41,28 @@
       <input type="date" id="firstDate" name="firstDate">
       <input type="time" id="firstDoseTime" name="firstDoseTime">
       <br>
-      <label for="secondDoseDate" name="secondDoseDate" id="second dose date">Second Dose Date</label>
+      <label for="secondDoseDate" name="secondDoseDate" id="second dose date">Second Dose Date:</label>
       <input type="date" id="secondDate" name="firstDate">
       <input type="time" id="secondDoseTime" name="secondDoseTime">
       <br>
-      <label for="phoneNumber" name="phoneNumber">Phone number</label>
+      <label for="phoneNumber" name="phoneNumber">Phone number:</label>
       <input type="tel" id="phone" name="phone">
       <br>
       <label for="phoneAccess" name="phoneAccess">Do you want access to your phone?</label>
-      <input type="radio" id="yesPhone" name="yesPhone" value="yes">
-      <label for="yesPhone">Yes</label>
-      <input type="radio" id="noPhone" name="noPhone" value="no">
-      <label for="noPhone">No</label>
+      <select name = "phoneAccess">
+        <option value = "No" >No</option>
+        <option value = "Yes">Yes</option>
+      </select>
       <br>
-      <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar</label>
-      <input type="radio" id="yesCalendar" name="yesCalendar" value="yes">
-      <label for="yesCalendar">Yes</label>
-      <input type="radio" id="noCalendar" name="noCalendar" value="no">
-      <label for="noCalendar">No</label>
+      <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar?</label>
+      <select name = "calendarAccess">
+        <option value = "No" >No</option>
+        <option value = "Yes">Yes</option>
+      </select>
       <br>
-      <label for="vaccineCardPicture">Take a photo of your vaccine card</label>
-      <input type="image" id="vaccineCardPicture">
       <br>
-
-      <input type="submit" value="Submit" onclick = "rhit.displayFormData()">
-
+      <input id = "submitButton" type="submit" value="Submit" >
+      
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>

@@ -6,9 +6,11 @@ rhit.FB_KEY_LASTNAME = "";
 rhit.FB_KEY_EMAIL = "";
 rhit.FB_KEY_VACCINE = "";
 rhit.FB_KEY_ADDRESS = "";
-rhit.FB_KEY_PHONENUMBER = "";
 rhit.FB_KEY_FIRSTDOSEDATE = "";
+rhit.FB_KEY_FIRSTDOSETIME = "";
 rhit.FB_KEY_SECONDDOSEDATE = "";
+rhit.FB_KEY_SECONDDOSETIME = "";
+rhit.FB_KEY_PHONENUMBER = "";
 
 rhit.fbPhotoBucketManager = null;
 rhit.fbSinglePhotoManager = null;
@@ -17,7 +19,7 @@ rhit.fbAuthManager = null;
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
-	html = html.trim(); 
+	html = html.trim();
 	template.innerHTML = html;
 	return template.content.firstChild;
 }
@@ -116,11 +118,11 @@ rhit.FbPhotoBucketManager = class {
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-				this._documentSnapshots = querySnapshot.docs;
-				console.log("Updated " + this._documentSnapshots.length + " photos.");
+			this._documentSnapshots = querySnapshot.docs;
+			console.log("Updated " + this._documentSnapshots.length + " photos.");
 
-				changeListener();
-				
+			changeListener();
+
 		});
 	}
 
@@ -156,12 +158,12 @@ rhit.FbPhotoBucketManager = class {
 	}
 }
 
-   
+
 rhit.FbInformationManager = class {
 	constructor(photoId) {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(photoId); // change "photoId"
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid); // change "photoId"
 	}
 
 	beginListening(changeListener) {
@@ -181,16 +183,36 @@ rhit.FbInformationManager = class {
 		this._unsubscribe();
 	}
 
-	get imageUrl() {
-		return this._document.get(rhit.FB_KEY_IMAGEURL);
-	}
 
-	get caption() {
-		return this._document.get(rhit.FB_KEY_CAPTION);
+	get name() {
+		let fname = this._document.get(rhit.FB_KEY_FIRSTNAME);
+		let lname = this._document.get(rhit.FB_KEY_LASTNAME);
+		let name = fname + " " + lname;
+		return name;
 	}
-
-	get author() {
-		return this._document.get(rhit.FB_KEY_AUTHOR);
+	get email() {
+		return this._document.get(rhit.FB_KEY_EMAIL);
+	}
+	get vaccineType() {
+		return this._document.get(rhit.FB_KEY_VACCINE);
+	}
+	get address() {
+		return this._document.get(rhit.FB_KEY_ADDRESS);
+	}
+	get firstDate() {
+		return this._document.get(rhit.FB_KEY_FIRSTDOSEDATE);
+	}
+	get firstDoseTime() {
+		return this._document.get(rhit.FB_KEY_FIRSTDOSETIME);
+	}
+	get secondDate() {
+		return this._document.get(rhit.FB_KEY_SECONDDOSEDATE);
+	}
+	get secondDoseTime() {
+		return this._document.get(rhit.FB_KEY_SECONDDOSETIME);
+	}
+	get phone() {
+		return this._document.get(rhit.FB_KEY_PHONENUMBER);
 	}
 
 
@@ -210,7 +232,7 @@ rhit.FbInformationManager = class {
 
 rhit.InformationPageController = class {
 	constructor() {
-		rhit.FbSinglePhotoManager.beginListening(this.updateView.bind(this));
+		rhit.FbInformationManager.beginListening(this.updateView.bind(this));
 
 
 		document.querySelector("#submitEditPhoto").onclick = (event) => {
@@ -223,23 +245,34 @@ rhit.InformationPageController = class {
 
 		// maybe add a delete account option?
 		// document.querySelector("#submitDeletePhoto").onclick = (event) => { 
-		// 	rhit.FbSinglePhotoManager.delete().then(() => {
+		// 	rhit.FbInformationManager.delete().then(() => {
 		// 		window.location.href = "/";
 		// 	});;
 		// };
 	}
 
 	updateView() {
-		document.querySelector("#pinImageUrl").src = rhit.FbSinglePhotoManager.imageUrl;
-		document.querySelector("#pinImageUrl").alt = rhit.FbSinglePhotoManager.caption;
 
-		document.querySelector("#pinCaption").innerHTML = rhit.FbSinglePhotoManager.caption;
+		document.querySelector("#Name").innerHTML = rhit.FbInformationManager.name;
+		document.querySelector("#Email").innerHTML = rhit.FbInformationManager.email; //might not be "innterHTML"
+		document.querySelector("#Vaccine").innerHTML = rhit.FbInformationManager.vaccineType;
+		document.querySelector("#TimeOne").innerHTML = rhit.FbInformationManager.firstDoseTime;
+		document.querySelector("#DateOne").innerHTML = rhit.FbInformationManager.firstDate;
+		document.querySelector("#AddressOne").innerHTML = rhit.FbInformationManager.addressOne;
+		document.querySelector("#TimeTwo").innerHTML = rhit.FbInformationManager.secondDate;
+		document.querySelector("#DateTwo").innerHTML = rhit.FbInformationManager.secondDoseTime;
+		document.querySelector("#AddressTwo").innerHTML = rhit.FbInformationManager.addressTwo;
+		document.querySelector("#Phone").innerHTML = rhit.FbInformationManager.phone;
 
 
-		if (rhit.FbSinglePhotoManager.author == rhit.fbAuthManager.uid) {
-			document.querySelector("#menuEdit").style.display= "flex";
-			document.querySelector("#menuDelete").style.display= "flex";
-		}
+
+		// document.querySelector("#pinImageUrl").src = rhit.FbInformationManager.imageUrl;
+		// document.querySelector("#pinImageUrl").alt = rhit.FbInformationManager.caption;
+		// document.querySelector("#pinCaption").innerHTML = rhit.FbInformationManager.caption;
+		// if (rhit.FbInformationManager.author == rhit.fbAuthManager.uid) {
+		// 	document.querySelector("#menuEdit").style.display= "flex";
+		// 	document.querySelector("#menuDelete").style.display= "flex";
+		// }
 	}
 }
 
@@ -247,19 +280,19 @@ rhit.InformationPageController = class {
 
 
 
-rhit.startFirebaseUI = function() {
+rhit.startFirebaseUI = function () {
 	var uiConfig = {
-	   signInSuccessUrl: '/',
-	   signInOptions: [
-		 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-		 firebase.auth.EmailAuthProvider.PROVIDER_ID,
-		 firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-		 firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-	   ],
-	 };
+		signInSuccessUrl: '/',
+		signInOptions: [
+			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+			firebase.auth.EmailAuthProvider.PROVIDER_ID,
+			firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+			firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+		],
+	};
 
-	 const ui = new firebaseui.auth.AuthUI(firebase.auth());
-	 ui.start('#firebaseui-auth-container', uiConfig);
+	const ui = new firebaseui.auth.AuthUI(firebase.auth());
+	ui.start('#firebaseui-auth-container', uiConfig);
 }
 
 
@@ -280,24 +313,6 @@ rhit.FbAuthManager = class {
 	beginListening(changeListener) {
 		firebase.auth().onAuthStateChanged((user) => {
 			this._user = user;
-			// if (user) {
-			// 	const displayName = user.displayName;
-			// 	const email = user.email;
-			// 	const photoURL = user.photoURL;
-			// 	const phoneNumber = user.phoneNumber;
-			// 	const isAnonymous = user.isAnonymous;
-			// 	const uid = user.uid;
-	
-			// 	console.log("The user is signed in ", uid);
-			// 	console.log('displayName :>> ', displayName);
-			// 	console.log('email :>> ', email);
-			// 	console.log('photoURL :>> ', photoURL);
-			// 	console.log('phoneNumber :>> ', phoneNumber);
-			// 	console.log('isAnonymous :>> ', isAnonymous);
-			// 	  // ...
-			// } else {
-			// 	console.log("The user is signed out");
-			// }
 			changeListener();
 		});
 	}
@@ -339,7 +354,7 @@ rhit.FbAuthManager = class {
 
 
 
-rhit.checkForRedirects = function() {
+rhit.checkForRedirects = function () {
 	if (document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn) {
 		window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
 	}
@@ -348,10 +363,10 @@ rhit.checkForRedirects = function() {
 	}
 }
 
-rhit.initializePage = function() {
+rhit.initializePage = function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
-	if(document.querySelector("#formPage")) {
+	if (document.querySelector("#formPage")) {
 		const uid = urlParams.get("uid");
 		console.log("got url param - ", uid);
 		rhit.fbPhotoBucketManager = new rhit.FbPhotoBucketManager(uid); // change
@@ -362,9 +377,9 @@ rhit.initializePage = function() {
 	if (document.querySelector("#informationPage")) {
 		// this page will fill in the information of the user based on what is stored.
 
-		const photoId = urlParams.get("id"); // can change maybe to just uid? might not be neccecary.
-		
-		rhit.FbSinglePhotoManager = new rhit.FbSinglePhotoManager(photoId);
+		const uid = urlParams.get("uid"); // can change maybe to just uid? might not be neccecary.
+
+		rhit.FbInformationManager = new rhit.FbInformationManager(uid);
 		new rhit.InformationPageController();
 	}
 
@@ -383,7 +398,7 @@ rhit.main = function () {
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening((params) => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
-		
+
 		rhit.checkForRedirects();
 		rhit.initializePage();
 	});

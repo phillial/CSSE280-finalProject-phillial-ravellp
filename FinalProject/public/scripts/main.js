@@ -1,16 +1,16 @@
 var rhit = rhit || {};
 
-rhit.FB_COLLECTION_PERSONALINFORMATION = "PersonalInformation";
-rhit.FB_KEY_FIRSTNAME = "FirstName";
-rhit.FB_KEY_LASTNAME = "LastName";
-rhit.FB_KEY_EMAIL = "email";
-rhit.FB_KEY_VACCINE = "";
-rhit.FB_KEY_ADDRESS = "";
-rhit.FB_KEY_FIRSTDOSEDATE = "";
-rhit.FB_KEY_FIRSTDOSETIME = "";
-rhit.FB_KEY_SECONDDOSEDATE = "";
-rhit.FB_KEY_SECONDDOSETIME = "";
-rhit.FB_KEY_PHONENUMBER = "";
+rhit.FB_COLLECTION_PERSONALINFORMATION = "PersonalInformation";//change
+rhit.FB_KEY_FIRSTNAME = "Example";
+rhit.FB_KEY_LASTNAME = "Example";
+rhit.FB_KEY_EMAIL = "Example";
+rhit.FB_KEY_VACCINE = "Example";
+rhit.FB_KEY_ADDRESS = "Example";
+rhit.FB_KEY_FIRSTDOSEDATE = "Example";
+rhit.FB_KEY_FIRSTDOSETIME = "Example";
+rhit.FB_KEY_SECONDDOSEDATE = "Example";
+rhit.FB_KEY_SECONDDOSETIME = "Example";
+rhit.FB_KEY_PHONENUMBER = "Example";
 
 rhit.fbPhotoBucketManager = null;
 rhit.fbSinglePhotoManager = null;
@@ -100,13 +100,13 @@ rhit.FormPageController = class {
 // }
 
 
-rhit.FbVaccineManager = class {
+rhit.FbPhotoBucketManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
 		this._unsubscribe = null;
 
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PHOTOBUCKET);
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION);
 	}
 
 	beginListening(changeListener) {
@@ -160,7 +160,7 @@ rhit.FbVaccineManager = class {
 
 
 rhit.FbInformationManager = class {
-	constructor(photoId) {
+	constructor(uid) {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid); // change "photoId"
@@ -216,18 +216,18 @@ rhit.FbInformationManager = class {
 	}
 
 
-	update(caption) {
-		this._ref.update({
-			[rhit.FB_KEY_CAPTION]: caption,
-			[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
-		}).then(() => {
-			console.log("Document updated");
-		});
-	}
+	// update(caption) {
+	// 	this._ref.update({
+	// 		[rhit.FB_KEY_CAPTION]: caption,
+	// 		[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+	// 	}).then(() => {
+	// 		console.log("Document updated");
+	// 	});
+	// }
 
-	delete() {
-		return this._ref.delete();
-	}
+	// delete() {
+	// 	return this._ref.delete();
+	// }
 }
 
 rhit.InformationPageController = class {
@@ -235,11 +235,11 @@ rhit.InformationPageController = class {
 		rhit.FbInformationManager.beginListening(this.updateView.bind(this));
 
 
-		document.querySelector("#submitEditPhoto").onclick = (event) => {
+		document.querySelector("#edit").onclick = (event) => {
 			`/form.html?uid=${rhit.fbAuthManager.uid}`
 		};
 
-		document.querySelector("#menuSignOut").addEventListener("click", (event) => {
+		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
 		});
 
@@ -263,16 +263,6 @@ rhit.InformationPageController = class {
 		document.querySelector("#DateTwo").innerHTML = rhit.FbInformationManager.secondDoseTime;
 		document.querySelector("#AddressTwo").innerHTML = rhit.FbInformationManager.addressTwo;
 		document.querySelector("#Phone").innerHTML = rhit.FbInformationManager.phone;
-
-
-
-		// document.querySelector("#pinImageUrl").src = rhit.FbInformationManager.imageUrl;
-		// document.querySelector("#pinImageUrl").alt = rhit.FbInformationManager.caption;
-		// document.querySelector("#pinCaption").innerHTML = rhit.FbInformationManager.caption;
-		// if (rhit.FbInformationManager.author == rhit.fbAuthManager.uid) {
-		// 	document.querySelector("#menuEdit").style.display= "flex";
-		// 	document.querySelector("#menuDelete").style.display= "flex";
-		// }
 	}
 }
 
@@ -284,10 +274,10 @@ rhit.startFirebaseUI = function () {
 	var uiConfig = {
 		signInSuccessUrl: '/',
 		signInOptions: [
-			// firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 			firebase.auth.EmailAuthProvider.PROVIDER_ID,
-			// firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-			// firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+			firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+			firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
 		],
 	};
 
@@ -317,15 +307,22 @@ rhit.FbAuthManager = class {
 		});
 	}
 	signIn() {
-		var email = document.getElementById("exampleInputEmail1").value; 
-		var password = document.getElementById("exampleInputPassword1").value; 
-		console.log(email + password)
-		firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-			// Handle Errors here.
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			console.log(errorCode);
-			console.log(errorMessage);
+		// once again, do we want rosefire?
+		Rosefire.signIn("2b1a3a21-a5ad-4f0c-b1a3-256bbf83e6f2", (err, rfUser) => {
+			if (err) {
+				console.log("Rosefire error!", err);
+				return;
+			}
+			console.log("Rosefire success!", rfUser);
+			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				if (errorCode === 'auth/invalid-custom-token') {
+					alert('The token you provided is not valid.');
+				} else {
+					console.error("Custom auth error", errorCode, errorMessage);
+				}
+			});
 		});
 	}
 
@@ -383,46 +380,90 @@ rhit.initializePage = function () {
 	}
 }
 
-rhit.displayFormData = function(){
-	
-	var firstName = document.getElementById("fname").value ; 
-	var lastName = document.getElementById("lname").value ; 
-	var email = document.getElementById("email").value ;
-	var vaccineName = document.getElementById("vaccineName").value ;
-	var address =document.getElementById("address").value  ; 
-	var firstDoseDate = document.getElementById("firstDate").value ; 
-	var firstDoseTime = document.getElementById("firstDoseTime").value ; 
-	var secondDoseDate = document.getElementById("secondDate").value ; 
-	var secondDoseTime = document.getElementById("secondTime").value ; 
-	var phoneNumber = document.getElementById("phone").value ; 
-	var accessToPhone = document.getElementById("yesPhone").value ;
-	var accessToCalendar = document.getElementById("noCalendar").value ;  
-	console.log(firstName)
-	console.log(lastName)
-	console.log(email)
-	console.log(vaccineName)
-	console.log(address)
-	console.log(firstDoseDate)
-	console.log(firstDoseTime)
-	console.log(secondDoseDate)
-	//console.log(secondDoseTime)
-	console.log(phoneNumber)
-	console.log(accessToPhone)
-	console.log(accessToCalendar)
+rhit.firebaseAuth = function() {
+	document.querySelector("#exampleInputEmail1").onclick = (event) => {
+		counter -= 1;
+		updateView(); 
+	};
+	document.querySelector("#resButton").onclick = (event) => {
+		counter = 0;
+		updateView(); 
+	};
+	document.querySelector("#incButton").onclick = (event) => {
+		counter += 1;
+		updateView(); 
+	};
 }
 
 /* Main */
 /** function and class syntax examples */
 rhit.main = function () {
 	console.log("Ready");
-	rhit.fbAuthManager = new rhit.FbAuthManager();
-	rhit.fbAuthManager.beginListening((params) => {
-		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 
-		rhit.checkForRedirects();
-		rhit.initializePage();
-	});
-	
+	// firebase.auth().onAuthStateChanged((user) => {
+	// 	if (user) {
+	// 		const displayName = user.displayName;
+	// 		const email = user.email;
+	// 		const photoURL = user.photoURL;
+	// 		const phoneNumber = user.phoneNumber;
+	// 		const isAnonymous = user.isAnonymous;
+	// 		const uid = user.uid;
+
+	// 	  	console.log("The user is signed in ", uid);
+	// 		console.log('displayName :>> ', displayName);
+	// 		console.log('email :>> ', email);
+	// 		console.log('photoURL :>> ', photoURL);
+	// 		console.log('phoneNumber :>> ', phoneNumber);
+	// 		console.log('isAnonymous :>> ', isAnonymous);
+	// 	  	// ...
+	// 	} else {
+	// 		console.log("The user is signed out");
+	// 	  // User is signed out
+	// 	  // ...
+	// 	}
+	//   });
+
+	const inputEmailEl = document.querySelector("#inputEmail");
+	const inputPasswordEl = document.querySelector("#inputPassword");
+
+	// document.querySelector("#signOutButton").onclick = (event) => {
+
+	// 	firebase.auth().signOut().then(() => {
+	// 			console.log("You are now signed out");
+	// 			// Sign-out successful.
+	// 		}).catch((error) => {
+	// 			console.log("Sign out error");
+	// 			// An error happened.
+	// 		});
+
+	// 	console.log("Sign out");
+	// };
+
+	// document.querySelector("#createAccountButton").onclick = (event) => {
+	// 	console.log(`Create account for email: ${inputEmailEl.value}, password: ${inputPasswordEl.value}`);
+	// 	firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value).catch((error) => {
+	// 			var errorCode = error.code;
+	// 			var errorMessage = error.message;
+	// 			console.log("Create-account error ", errorCode, errorMessage);
+	// 			// ..
+	// 		});
+	// };
+
+	document.querySelector("#logInButton").onclick = (event) => {
+		console.log(`Log in for email: ${inputEmailEl.value}, password: ${inputPasswordEl.value}`);
+		firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value).catch((error) => {
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				console.log("login error ", errorCode, errorMessage);
+			});
+	};
 };
 
 rhit.main();
+
+
+function updateView() {
+    document.querySelector("#counter").innerHTML = `Count = ${counter}`;
+}
+
+main();

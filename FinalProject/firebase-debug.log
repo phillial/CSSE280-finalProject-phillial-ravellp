@@ -1,0 +1,21 @@
+[debug] [2021-05-14T01:44:05.557Z] ----------------------------------------------------------------------
+[debug] [2021-05-14T01:44:05.562Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\phillial\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2021-05-14T01:44:05.562Z] CLI Version:   9.6.1
+[debug] [2021-05-14T01:44:05.563Z] Platform:      win32
+[debug] [2021-05-14T01:44:05.563Z] Node Version:  v14.17.0
+[debug] [2021-05-14T01:44:05.565Z] Time:          Thu May 13 2021 21:44:05 GMT-0400 (Eastern Daylight Time)
+[debug] [2021-05-14T01:44:05.565Z] ----------------------------------------------------------------------
+[debug] [2021-05-14T01:44:05.566Z] 
+[debug] [2021-05-14T01:44:05.584Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-05-14T01:44:05.585Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\phillial\Documents\GitHub\CSSE280-finalProject-phillial-ravellp\FinalProject
+

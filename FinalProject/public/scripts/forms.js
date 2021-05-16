@@ -97,4 +97,3 @@ var dlurl = 'data:text/calendar;base64,'+btoa(ics_lines.join('\r\n'));
 
 
 
-}

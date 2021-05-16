@@ -22,8 +22,10 @@ rhit.initializePage = function () {
 			// rhit.fbPhotoBucketManager = new rhit.FbPhotoBucketManager(uid); // change
 			// new rhit.FormPageController();
 
-		
-
+		const uid = urlParams.get("uid");
+		if (uid) {
+			this._ref = firebase.firestore().collection(PersonalInformation).doc(movieQuoteId)
+		}
 
 
 
@@ -65,18 +67,25 @@ rhit.initializePage = function () {
 	if (document.querySelector("#loginPage")) {
 		// Old code that will need to be updated if/when we make page-manager-class things
 			// new rhit.LoginPageController();
-	
-
-		var inputEmail = document.querySelector("#inputEmail");
-		var inputPassword = document.querySelector("#inputPassword");
 
 		document.querySelector("#signUpButton").onclick = function(){
 			window.location.href = "/form.html"
 			console.log("i am selecting sign up page")
 		}
 
+
 		document.querySelector("#logInButton").onclick = function() {
-			rhit.fbAuthManager.signIn(inputEmail, inputPassword);
+			var inputEmail = document.querySelector("#inputEmail");
+			var inputPassword = document.querySelector("#inputPassword");
+
+			firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).then((i) => {
+				console.log(`Loging in with email: ${inputEmail.value}, password: ${inputPassword.value}`);
+				window.location.href = `/information.html?uid=${i.user.uid}`;
+			}).catch((error) => {
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				console.log("login error ", errorCode, errorMessage);
+			});		
 		};
 	}
 
@@ -97,12 +106,11 @@ rhit.FbAuthManager = class {
 	}
 
 	signIn(inputEmail, inputPassword) {
-		firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).catch((error) => {
+		return firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).catch((error) => {
 			var errorCode = error.code;
 			var errorMessage = error.message;
 			console.log("login error ", errorCode, errorMessage);
 		});
-		console.log(`Loging in with email: ${inputEmail.value}, password: ${inputPassword.value}`);
 	}
 	signOut() {
 		firebase.auth().signOut().catch((error) => {
@@ -127,7 +135,7 @@ rhit.main = function () {
 	rhit.fbAuthManager.beginListening((params) => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 	
-		rhit.checkForRedirects();
+		// rhit.checkForRedirects();
 		rhit.initializePage();
 	});
 };

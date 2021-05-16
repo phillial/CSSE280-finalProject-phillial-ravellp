@@ -1,14 +1,14 @@
 var rhit = rhit || {};
 
 
-// rhit.checkForRedirects = function () {
-// 	if (document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn) {
-// 		window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
-// 	}
-// 	if (!document.querySelector("#loginPage") && !rhit.fbAuthManager.isSignedIn) {
-// 		window.location.href = "/";
-// 	}
-// }
+rhit.checkForRedirects = function () {
+	if (document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn) {
+		window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
+	}
+	if (!document.querySelector("#loginPage") && !rhit.fbAuthManager.isSignedIn) {
+		window.location.href = "/";
+	}
+}
 
 
 
@@ -23,8 +23,11 @@ rhit.initializePage = function () {
 			// new rhit.FormPageController();
 
 		
-		document.querySelector("#submitFormButton").onclick = function(){
 
+
+
+
+		document.querySelector("#submitFormButton").onclick = function(){
 			// might need this to sign in, will need to put the email and password field values	
 			firebase.auth().createUserWithEmailAndPassword().catch((error) => {
 				var errorCode = error.code;
@@ -64,25 +67,16 @@ rhit.initializePage = function () {
 			// new rhit.LoginPageController();
 	
 
-		let inputEmail = document.querySelector("#inputEmail");
-		let inputPassword = document.querySelector("#inputPassword");
+		var inputEmail = document.querySelector("#inputEmail");
+		var inputPassword = document.querySelector("#inputPassword");
 
 		document.querySelector("#signUpButton").onclick = function(){
 			window.location.href = "/form.html"
 			console.log("i am selecting sign up page")
 		}
 
-
-
 		document.querySelector("#logInButton").onclick = function() {
-			console.log(`Loging in with email: ${inputEmail.value}, password: ${inputPassword.value}`);
-
-			this._user = firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).catch((error) => {
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					console.log("login error ", errorCode, errorMessage);
-			});
-			window.location.href = `/information.html?uid=${_user.i.user.uid}`;
+			rhit.fbAuthManager.signIn(inputEmail, inputPassword);
 		};
 	}
 
@@ -102,23 +96,13 @@ rhit.FbAuthManager = class {
 		});
 	}
 
-	signIn() {
-		Rosefire.signIn("cd43695f-894b-4fb5-b71f-1dc676f5ed56", (err, rfUser) => {
-			if (err) {
-				console.log("Rosefire error!", err);
-				return;
-			}
-			console.log("Rosefire success!", rfUser);
-			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				if (errorCode === 'auth/invalid-custom-token') {
-					alert('The token you provided is not valid.');
-				} else {
-					console.error("Custom auth error", errorCode, errorMessage);
-				}
-			});
+	signIn(inputEmail, inputPassword) {
+		firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).catch((error) => {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log("login error ", errorCode, errorMessage);
 		});
+		console.log(`Loging in with email: ${inputEmail.value}, password: ${inputPassword.value}`);
 	}
 	signOut() {
 		firebase.auth().signOut().catch((error) => {
@@ -143,7 +127,7 @@ rhit.main = function () {
 	rhit.fbAuthManager.beginListening((params) => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 	
-		// rhit.checkForRedirects();
+		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
 };

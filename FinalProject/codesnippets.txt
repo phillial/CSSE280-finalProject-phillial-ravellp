@@ -1,0 +1,22 @@
+Email.send({
+			 Host: "smtp.gmail.com",
+			 Username: "digitalvaccinereminder@gmail.com",
+			  Password: "AveryPavani",
+			
+			From: "digitalvaccinereminder@gmail.com",
+			To: 'digitalvaccinereminder@gmail.com ',
+			Subject: "hi",
+			Body: "hi bobby"
+		})
+			.then(function (message) {
+				alert("mail sent successfully")
+			});
+      
+ for emai sned
+ 
+ export scheduledFunctionPlainEnglish =
+functions.pubsub.schedule('every 5 minutes').onRun((context) => {
+    console.log('This will be run every 5 minutes!');
+});
+
+https://github.com/firebase/functions-samples/tree/master/delete-unused-accounts-cron

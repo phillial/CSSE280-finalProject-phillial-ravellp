@@ -17,7 +17,7 @@
   <div id="formPage" class="container page-container">
 
     
-    <label for="fname">First Name:</label>
+    <label id="fNameLabel" for="fname">First Name:</label>
     <input type="text" id="fname" name="firstname" placeholder="Your name..">
     <br>
     <label for="lname">Last Name:</label>
@@ -29,7 +29,7 @@
     <label for="vaccineName" id="vaccineName">Vaccine Name:</label>
     
    
-      <select name = "vaccineType">
+      <select name = "vaccineType" id = "vaccineType">
         <option value = "Pfizer" >Pfizer</option>
         <option value = "Moderna">Moderna</option>
       </select>
@@ -49,19 +49,19 @@
       <input type="tel" id="phone" name="phone">
       <br>
       <label for="phoneAccess" name="phoneAccess">Do you want access to your phone?</label>
-      <select name = "phoneAccess">
+      <select name = "phoneAccess" id = "phoneAccess">
         <option value = "No" >No</option>
         <option value = "Yes">Yes</option>
       </select>
       <br>
       <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar?</label>
-      <select name = "calendarAccess">
+      <select name = "calendarAccess" id = "calendarAccess">
         <option value = "No" >No</option>
         <option value = "Yes">Yes</option>
       </select>
       <br>
       <br>
-      <input id = "submitButton" type="submit" value="Submit" >
+      <input id = "submitFormButton" type="submit" value="Submit" >
       
   </div>
   <script src="scripts/jquery.min.js"></script>
@@ -75,7 +75,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/main.js"></script>
+  <script src="scripts/forms.js"></script>
 </body>
 
 </html>

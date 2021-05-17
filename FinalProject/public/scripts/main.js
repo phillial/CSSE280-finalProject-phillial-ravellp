@@ -253,6 +253,9 @@ rhit.main = function () {
     	console.log('This will be run every 1 minutes!');
 	});
 
+
+
+	
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening((params) => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);

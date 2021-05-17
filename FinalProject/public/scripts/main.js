@@ -1,12 +1,14 @@
 var rhit = rhit || {};
-rhit.FB_COLLECTION_MOVIEQUOTE = "PersonalInformation";
+rhit.FB_COLLECTION_PERSONALINFORMATION = "PersonalInformation";
+rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_FIRSTNAME = "FirstName";
 rhit.FB_KEY_LASTNAME = "LastName";
 rhit.FB_KEY_EMAIL = "Email";
+rhit.FB_KEY_PASSWORD = "Password";
 rhit.FB_KEY_PHONE = "PhoneNumber";
 rhit.FB_KEY_ADDRESS = "address";
-rhit.FB_KEY_ACCESSCALENDAR = "accessToCalendar"
-rhit.FB_KEY_ACCESSPHONE = "accessToPhone"
+// rhit.FB_KEY_ACCESSCALENDAR = "accessToCalendar"
+// rhit.FB_KEY_ACCESSPHONE = "accessToPhone"
 rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
 rhit.FB_KEY_FIRSTDOSETIME = "firstDoseTime";
 rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
@@ -60,11 +62,56 @@ rhit.initializePage = function () {
 
 		document.querySelector("#submitFormButton").onclick = function () {
 			// might need this to sign in, will need to put the email and password field values	
-			firebase.auth().createUserWithEmailAndPassword().catch((error) => {
+			const fname = document.querySelector("#fname").value;
+			const lname = document.querySelector("#lname").value;
+			const email = document.querySelector("#email").value
+			const address = document.querySelector("#address").value;
+			const fdate = document.querySelector("#firstDate").value;
+			const ftime = document.querySelector("#firstDoseTime").value;
+			const sdate = document.querySelector("#secondDate").value;
+			const stime = document.querySelector("#secondDoseTime").value;
+			const vaccine = document.querySelector("#vaccineType").value;
+			const phone = document.querySelector("#phone").value;
+			const password = document.querySelector("#password").value;
+			
+			
+			firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
 				var errorCode = error.code;
 				var errorMessage = error.message;
 				console.log("sign-in error ", errorCode, errorMessage);
 			});
+			
+			firebase.firestore().collection(rhit.FB_COLLECTION_USERS).add({
+				[rhit.FB_KEY_EMAIL]: email,
+				[rhit.FB_KEY_PASSWORD]: password,
+			}).then(function (docRef) {
+				console.log("Document added with ID: ", docRef.id);
+			})
+			.catch(function (error) {
+				console.error("Error adding document: ", error);
+			});
+
+			firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).add({
+					[rhit.FB_KEY_FIRSTNAME]: fname,
+					[rhit.FB_KEY_LASTNAME]: lname,
+					[rhit.FB_KEY_EMAIL]: email,
+					[rhit.FB_KEY_PHONE]: phone,
+					[rhit.FB_KEY_ADDRESS]: address,
+					[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
+					[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
+					[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
+					[rhit.FB_KEY_SECONDDOSETIME]: stime,
+					[rhit.FB_KEY_VACCINENAME]: vaccine,
+					[rhit.FB_KEY_UID]: rhit.fbAuthManager.uid,
+				})
+				.then(function (docRef) {
+					console.log("Document added with ID: ", docRef.id);
+				})
+				.catch(function (error) {
+					console.error("Error adding document: ", error);
+				});
+
+			window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
 		}
 	}
 
@@ -76,8 +123,9 @@ rhit.initializePage = function () {
 		// rhit.FbInformationManager = new rhit.FbInformationManager(uid);
 		// new rhit.InformationPageController();
 
+		const uid = urlParams.get("uid");
 
-		this._ref = firebase.firestore().collection("PersonalInformation"); //.doc(uid)
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION); //.doc(uid)
 		let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc").where(rhit.FB_KEY_UID, "==", uid);
 		
 		
@@ -94,21 +142,21 @@ rhit.initializePage = function () {
 			this.fillInForm(personalInfo);
 			});
 
-		document.querySelector("#Name").innerHTML = personalInfo.
-		document.querySelector("#Email").innerHTML
-		document.querySelector("#Vaccine").innerHTML
+		// document.querySelector("#Name").innerHTML = personalInfo.
+		// document.querySelector("#Email").innerHTML
+		// document.querySelector("#Vaccine").innerHTML
 		
-		document.querySelector("#DateOne").innerHTML
-		document.querySelector("#TimeOne").innerHTML
-		document.querySelector("#AddressOne").innerHTML
-		// document.querySelector("#CityOne").innerHTML
-		// document.querySelector("#StateOne").innerHTML
+		// document.querySelector("#DateOne").innerHTML
+		// document.querySelector("#TimeOne").innerHTML
+		// document.querySelector("#AddressOne").innerHTML
+		// // document.querySelector("#CityOne").innerHTML
+		// // document.querySelector("#StateOne").innerHTML
 		
-		document.querySelector("#DateTwo").innerHTML
-		document.querySelector("#TimeTwo").innerHTML
-		document.querySelector("#AddressTwo").innerHTML
-		// document.querySelector("#CityTwo").innerHTML
-		// document.querySelector("#StateTwo").innerHTML
+		// document.querySelector("#DateTwo").innerHTML
+		// document.querySelector("#TimeTwo").innerHTML
+		// document.querySelector("#AddressTwo").innerHTML
+		// // document.querySelector("#CityTwo").innerHTML
+		// // document.querySelector("#StateTwo").innerHTML
 
 
 
@@ -155,7 +203,7 @@ rhit.initializePage = function () {
 			
 
 			
-			this._ref = firebase.firestore().collection("PersonalInformation");
+			this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION);
 			
 			let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc").where(rhit.FB_KEY_UID, "==", uid);
 			
@@ -191,19 +239,6 @@ rhit.PersonalInformation = class {
 		this.vaccine = vaccine;
 	}
 }
-
-// "firstName";
-// rhit.FB_KEY_LASTNAME = "lastName";
-// rhit.FB_KEY_EMAIL = "email";
-// rhit.FB_KEY_PHONE = "phone";
-// rhit.FB_KEY_ADDRESS = "address";
-// rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
-// rhit.FB_KEY_FIRSTDOSETIME = "firstDoseTime";
-// rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
-// rhit.FB_KEY_SECONDDOSETIME = "secondDoseTime";
-// rhit.FB_KEY_VACCINENAME = "vaccineName";
-// rhit.FB_KEY_UID = "uid";
-
 
 
 
@@ -248,14 +283,6 @@ rhit.FbAuthManager = class {
 rhit.main = function () {
 	console.log("Ready");
 
-
-	export let scheduledFunctionPlainEnglish = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
-    	console.log('This will be run every 1 minutes!');
-	});
-
-
-
-	
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening((params) => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);

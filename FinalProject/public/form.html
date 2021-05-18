@@ -23,16 +23,16 @@
     <label for="lname">Last Name:</label>
     <input type="text" id="lname" name="lastname" placeholder="Your last name..">
     <br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" placeholder="corruptnolagovernor@deadla.com">
-    <br>
-    <label for = "password"> Password: </label>
-    <input type="password" id = "password" name = password >
-    <br>
+    <div id="emailPasswordContainer">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="example@gmail.com">
+      <br>
+      <label for = "password"> Password: </label>
+      <input type="password" id = "password" name = password placeholder="">
+      <br>
+    </div>
     <label for="vaccineName" id="vaccineName">Vaccine Name:</label>
-    
-   
-      <select name = "vaccineType" id = "vaccineType">
+      <select name = "vaccineType" id = "vaccineType" placeholder="">
         <option value = "Pfizer" >Pfizer</option>
         <option value = "Moderna">Moderna</option>
       </select>
@@ -41,28 +41,28 @@
       <input type="text" id="address"></input>
       <br>
       <label for="firstDoseDate" name="firstDoseDate">First Dose Date:</label>
-      <input type="date" id="firstDate" name="firstDate">
-      <input type="time" id="firstDoseTime" name="firstDoseTime">
+      <input type="date" id="firstDate" name="firstDate" placeholder="">
+      <input type="time" id="firstDoseTime" name="firstDoseTime" placeholder="">
       <br>
       <label for="secondDoseDate" name="secondDoseDate" id="second dose date">Second Dose Date:</label>
-      <input type="date" id="secondDate" name="firstDate">
-      <input type="time" id="secondDoseTime" name="secondDoseTime">
+      <input type="date" id="secondDate" name="firstDate" placeholder="">
+      <input type="time" id="secondDoseTime" name="secondDoseTime" placeholder="">
       <br>
       <label for="phoneNumber" name="phoneNumber">Phone number:</label>
-      <input type="tel" id="phone" name="phone">
+      <input type="tel" id="phone" name="phone" placeholder="">
       <br>
       <label for="phoneAccess" name="phoneAccess">Do you want access to your phone?</label>
-      <select name = "phoneAccess" id = "phoneAccess">
+      <select name = "phoneAccess" id = "phoneAccess" placeholder="">
         <option value = "No" >No</option>
         <option value = "Yes">Yes</option>
       </select>
       <br>
-      <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar?</label>
+      <!-- <label for="calendarAccess" name="calendarAccess">Do you want access to your calendar?</label>
       <select name = "calendarAccess" id = "calendarAccess">
         <option value = "No" >No</option>
         <option value = "Yes">Yes</option>
       </select>
-      <br>
+      <br> -->
       <br>
       <input id="submitFormButton" type="button" value="Submit" >
       

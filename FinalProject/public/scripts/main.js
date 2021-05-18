@@ -7,8 +7,7 @@ rhit.FB_KEY_EMAIL = "Email";
 rhit.FB_KEY_PASSWORD = "Password";
 rhit.FB_KEY_PHONE = "PhoneNumber";
 rhit.FB_KEY_ADDRESS = "address";
-// rhit.FB_KEY_ACCESSCALENDAR = "accessToCalendar"
-// rhit.FB_KEY_ACCESSPHONE = "accessToPhone"
+rhit.FB_KEY_ACCESSPHONE = "accessToPhone"
 rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
 rhit.FB_KEY_FIRSTDOSETIME = "firstDoseTime";
 rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
@@ -16,7 +15,18 @@ rhit.FB_KEY_SECONDDOSETIME = "secondDoseTime";
 rhit.FB_KEY_VACCINENAME = "vaccineName";
 rhit.FB_KEY_UID = "uid";
 
+rhit.fbAuthManager = null;
 rhit.personalInfo = null;
+
+
+// get the citation
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
+
 
 rhit.checkForRedirects = function () {
 	if (document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn) {
@@ -37,61 +47,56 @@ rhit.initializePage = function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
 	if (document.querySelector("#formPage")) {
-		// Old code that will need to be updated if/when we make page-manager-class things
-		// const uid = urlParams.get("uid");
-		// console.log("got url param - ", uid);
-		// rhit.fbPhotoBucketManager = new rhit.FbPhotoBucketManager(uid); // change
-		// new rhit.FormPageController();
-		
 
 		const uid = urlParams.get("uid");
 		if (uid) {
-			// this._ref = firebase.firestore().collection("PersonalInformation"); //.doc(personalInfo.id);
+			this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid);		
+			// this._unsubscribe = 
+			this._unsubscribe = this._ref.onSnapshot(async function (docSnapshot) {
+				this._doc = docSnapshot;
 
-			// let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc").where(rhit.FB_KEY_UID, "==", uid);
-			// this._unsubscribe = query.onSnapshot((querySnapshot) => {
-			// 	this._doc = querySnapshot.docs[0];
-			// 	const personalInfo = new rhit.PersonalInformation(this._doc.id, this._doc.get(rhit.FB_KEY_FIRSTNAME), this._doc.get(rhit.FB_KEY_LASTNAME),
-			// 	this._doc.get(rhit.FB_KEY_EMAIL), this._doc.get(rhit.FB_KEY_PHONE), this._doc.get(rhit.FB_KEY_ADDRESS), this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE), 
-			// 	this._doc.get(rhit.FB_KEY_FIRSTDOSETIME), this._doc.get(rhit.FB_KEY_SECONDDOSEDATE), this._doc.get(rhit.FB_KEY_SECONDDOSETIME), 
-			// 	this._doc.get(rhit.FB_KEY_VACCINENAME), this._doc.get(rhit.FB_KEY_UID) );
-			// });
-			this.fillInForm(personalInfo);
-		}
+				const email = this._doc.get(rhit.FB_KEY_EMAIL); //will probably want to just get rid of that input
+				// const password = will probably want to just get rid of that input
+				const fname = this._doc.get(rhit.FB_KEY_FIRSTNAME);
+				const lname = this._doc.get(rhit.FB_KEY_LASTNAME);
+				const vaccine = this._doc.get(rhit.FB_KEY_VACCINENAME);
+				const address = this._doc.get(rhit.FB_KEY_ADDRESS);
+				const fdate = this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE);
+				const ftime = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
+				const sdate = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
+				const stime = this._doc.get(rhit.FB_KEY_SECONDDOSETIME)
+				const phone = this._doc.get(rhit.FB_KEY_PHONE);
 
-
-		document.querySelector("#submitFormButton").onclick = function () {
-			// might need this to sign in, will need to put the email and password field values	
-			const fname = document.querySelector("#fname").value;
-			const lname = document.querySelector("#lname").value;
-			const email = document.querySelector("#email").value
-			const address = document.querySelector("#address").value;
-			const fdate = document.querySelector("#firstDate").value;
-			const ftime = document.querySelector("#firstDoseTime").value;
-			const sdate = document.querySelector("#secondDate").value;
-			const stime = document.querySelector("#secondDoseTime").value;
-			const vaccine = document.querySelector("#vaccineType").value;
-			const phone = document.querySelector("#phone").value;
-			const password = document.querySelector("#password").value;
-			
-			
-			firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
-				var errorCode = error.code;
-				var errorMessage = error.message;
-				console.log("sign-in error ", errorCode, errorMessage);
+				document.querySelector("#email").value = email;
+				document.querySelector("#fname").value = fname;
+				document.querySelector("#lname").value = lname;
+				document.querySelector("#address").value = address;
+				document.querySelector("#firstDate").value = fdate;
+				document.querySelector("#firstDoseTime").value = ftime;
+				document.querySelector("#secondDate").value = sdate;
+				document.querySelector("#secondDoseTime").value = stime;
+				document.querySelector("#vaccineType").value = vaccine;
+				document.querySelector("#phone").value = phone;
+				
+				document.querySelector("#emailPasswordContainer").hidden = true; //might not be right
+				// document.querySelector("#password").disabled = true; //might not be right
 			});
-			
-			firebase.firestore().collection(rhit.FB_COLLECTION_USERS).add({
-				[rhit.FB_KEY_EMAIL]: email,
-				[rhit.FB_KEY_PASSWORD]: password,
-			}).then(function (docRef) {
-				console.log("Document added with ID: ", docRef.id);
-			})
-			.catch(function (error) {
-				console.error("Error adding document: ", error);
-			});
+			// this._unsubscribe();
 
-			firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).add({
+			document.querySelector("#submitFormButton").onclick = async function () {
+				document.querySelector("#emailPasswordContainer").hidden = false;
+				const fname = document.querySelector("#fname").value;
+				const lname = document.querySelector("#lname").value;
+				const email = document.querySelector("#email").value;
+				const address = document.querySelector("#address").value;
+				const fdate = document.querySelector("#firstDate").value;
+				const ftime = document.querySelector("#firstDoseTime").value;
+				const sdate = document.querySelector("#secondDate").value;
+				const stime = document.querySelector("#secondDoseTime").value;
+				const vaccine = document.querySelector("#vaccineType").value;
+				const phone = document.querySelector("#phone").value;
+
+				await firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid).set({
 					[rhit.FB_KEY_FIRSTNAME]: fname,
 					[rhit.FB_KEY_LASTNAME]: lname,
 					[rhit.FB_KEY_EMAIL]: email,
@@ -101,64 +106,83 @@ rhit.initializePage = function () {
 					[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
 					[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
 					[rhit.FB_KEY_SECONDDOSETIME]: stime,
-					[rhit.FB_KEY_VACCINENAME]: vaccine,
-					[rhit.FB_KEY_UID]: rhit.fbAuthManager.uid,
-				})
-				.then(function (docRef) {
-					console.log("Document added with ID: ", docRef.id);
-				})
-				.catch(function (error) {
-					console.error("Error adding document: ", error);
+					[rhit.FB_KEY_VACCINENAME]: vaccine
 				});
+				// await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
+				// 	var errorCode = error.code;
+				// 	var errorMessage = error.message;
+				// 	console.log("sign-in error ", errorCode, errorMessage);
+				// }).then((_user) => {
+				// }).catch(function (error) {
+				// 	console.error("Error adding document: ", error);
+				// });			
+				window.location.href = `/information.html?uid=${uid}`;
+			}
 
-			window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
+		} else {
+			document.querySelector("#submitFormButton").onclick = async function () {
+				const fname = document.querySelector("#fname").value;
+				const lname = document.querySelector("#lname").value;
+				const email = document.querySelector("#email").value
+				const address = document.querySelector("#address").value;
+				const fdate = document.querySelector("#firstDate").value;
+				const ftime = document.querySelector("#firstDoseTime").value;
+				const sdate = document.querySelector("#secondDate").value;
+				const stime = document.querySelector("#secondDoseTime").value;
+				const vaccine = document.querySelector("#vaccineType").value;
+				const phone = document.querySelector("#phone").value;
+				const password = document.querySelector("#password").value;	
+
+				await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
+					var errorCode = error.code;
+					var errorMessage = error.message;
+					console.log("sign-in error ", errorCode, errorMessage);
+				}).then((_user) => {
+					firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(_user.user.uid).set({
+						[rhit.FB_KEY_FIRSTNAME]: fname,
+						[rhit.FB_KEY_LASTNAME]: lname,
+						[rhit.FB_KEY_EMAIL]: email,
+						[rhit.FB_KEY_PHONE]: phone,
+						[rhit.FB_KEY_ADDRESS]: address,
+						[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
+						[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
+						[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
+						[rhit.FB_KEY_SECONDDOSETIME]: stime,
+						[rhit.FB_KEY_VACCINENAME]: vaccine
+					});
+				}).catch(function (error) {
+					console.error("Error adding document: ", error);
+				});			
+				window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
+			}
 		}
 	}
 
 
 	if (document.querySelector("#informationPage")) {
-		// Old code that will need to be updated if/when we make page-manager-class things
-		// this page will fill in the information of the user based on what is stored.
-		// const uid = urlParams.get("uid"); // can change maybe to just uid? might not be neccecary.
-		// rhit.FbInformationManager = new rhit.FbInformationManager(uid);
-		// new rhit.InformationPageController();
 
 		const uid = urlParams.get("uid");
 
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION); //.doc(uid)
-		let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc").where(rhit.FB_KEY_UID, "==", uid);
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid);		
 		
-		
-		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-			// this._documentSnapshots = querySnapshot.docs;
-			// console.log("Updated " + this._documentSnapshots.length + " quotes.");
+		this._unsubscribe = this._ref.onSnapshot((docSnapshot) => {
+			this._doc = docSnapshot;
+			// rhit.personalInfo = new rhit.PersonalInformation(this._doc.id, this._doc.get(rhit.FB_KEY_FIRSTNAME), this._doc.get(rhit.FB_KEY_LASTNAME),
+			// this._doc.get(rhit.FB_KEY_EMAIL), this._doc.get(rhit.FB_KEY_PHONE), this._doc.get(rhit.FB_KEY_ADDRESS), this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE), 
+			// this._doc.get(rhit.FB_KEY_FIRSTDOSETIME), this._doc.get(rhit.FB_KEY_SECONDDOSEDATE), this._doc.get(rhit.FB_KEY_SECONDDOSETIME), 
+			// this._doc.get(rhit.FB_KEY_VACCINENAME), this._doc.get(rhit.FB_KEY_UID) );
 
-			this._doc = querySnapshot.docs[0];
-			const personalInfo = new rhit.PersonalInformation(this._doc.id, this._doc.get(rhit.FB_KEY_FIRSTNAME), this._doc.get(rhit.FB_KEY_LASTNAME),
-			this._doc.get(rhit.FB_KEY_EMAIL), this._doc.get(rhit.FB_KEY_PHONE), this._doc.get(rhit.FB_KEY_ADDRESS), this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE), 
-			this._doc.get(rhit.FB_KEY_FIRSTDOSETIME), this._doc.get(rhit.FB_KEY_SECONDDOSEDATE), this._doc.get(rhit.FB_KEY_SECONDDOSETIME), 
-			this._doc.get(rhit.FB_KEY_VACCINENAME), this._doc.get(rhit.FB_KEY_UID) );
-			
-			this.fillInForm(personalInfo);
+			document.querySelector("#Name").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTNAME) + " " + this._doc.get(rhit.FB_KEY_LASTNAME);
+			document.querySelector("#Email").innerHTML = this._doc.get(rhit.FB_KEY_EMAIL);
+			document.querySelector("#Phone").innerHTML = this._doc.get(rhit.FB_KEY_PHONE);
+			document.querySelector("#Vaccine").innerHTML = this._doc.get(rhit.FB_KEY_VACCINENAME);
+			document.querySelector("#DateOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE);
+			document.querySelector("#TimeOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
+			document.querySelector("#AddressOne").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESS);
+			document.querySelector("#DateTwo").innerHTML = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
+			document.querySelector("#TimeTwo").innerHTML =this._doc.get(rhit.FB_KEY_SECONDDOSETIME);
+			document.querySelector("#AddressTwo").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESS);
 			});
-
-		// document.querySelector("#Name").innerHTML = personalInfo.
-		// document.querySelector("#Email").innerHTML
-		// document.querySelector("#Vaccine").innerHTML
-		
-		// document.querySelector("#DateOne").innerHTML
-		// document.querySelector("#TimeOne").innerHTML
-		// document.querySelector("#AddressOne").innerHTML
-		// // document.querySelector("#CityOne").innerHTML
-		// // document.querySelector("#StateOne").innerHTML
-		
-		// document.querySelector("#DateTwo").innerHTML
-		// document.querySelector("#TimeTwo").innerHTML
-		// document.querySelector("#AddressTwo").innerHTML
-		// // document.querySelector("#CityTwo").innerHTML
-		// // document.querySelector("#StateTwo").innerHTML
-
-
 
 
 
@@ -189,34 +213,22 @@ rhit.initializePage = function () {
 		}
 
 
-		document.querySelector("#logInButton").onclick = function () {
+		document.querySelector("#logInButton").onclick = async function () {
 			var inputEmail = document.querySelector("#inputEmail");
 			var inputPassword = document.querySelector("#inputPassword");
-
-			this._user = firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value).then(() => {
-				console.log(`Loging in with email: ${inputEmail.value}, password: ${inputPassword.value}`);
-			}).catch((error) => {
-				var errorCode = error.code;
-				var errorMessage = error.message;
-				console.log("login error ", errorCode, errorMessage);
-			});
 			
 
+			await rhit.fbAuthManager.signIn(inputEmail, inputPassword);
 			
 			this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION);
 			
-			let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc").where(rhit.FB_KEY_UID, "==", uid);
-			
-			this._unsubscribe = query.onSnapshot((querySnapshot) => {
-				this._doc = querySnapshot.docs[0];
-				rhit.personalInfo = new rhit.PersonalInformation(this._doc.id, this._doc.get(rhit.FB_KEY_FIRSTNAME), this._doc.get(rhit.FB_KEY_LASTNAME),
-				this._doc.get(rhit.FB_KEY_EMAIL), this._doc.get(rhit.FB_KEY_PHONE), this._doc.get(rhit.FB_KEY_ADDRESS), this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE), 
-				this._doc.get(rhit.FB_KEY_FIRSTDOSETIME), this._doc.get(rhit.FB_KEY_SECONDDOSEDATE), this._doc.get(rhit.FB_KEY_SECONDDOSETIME), 
-				this._doc.get(rhit.FB_KEY_VACCINENAME), this._doc.get(rhit.FB_KEY_UID) );
-			});
+			let query = this._ref.orderBy(rhit.FB_KEY_FIRSTNAME, "desc");
+			query.where(rhit.FB_KEY_UID, "==", rhit.fbAuthManager.uid);
+		
 
-			this._unsubscribe();
-			window.location.href = `/information.html?uid=${this._user.i.user.uid}`;
+
+			window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
+
 		};
 	}
 	
@@ -242,8 +254,6 @@ rhit.PersonalInformation = class {
 
 
 
-
-
 rhit.FbAuthManager = class {
 	constructor() {
 		this._user = null;
@@ -251,6 +261,9 @@ rhit.FbAuthManager = class {
 
 	beginListening(changeListener) {
 		firebase.auth().onAuthStateChanged((user) => {
+			if(!user) {
+			    console.log("no user");	
+			}
 			this._user = user;
 			changeListener();
 		});

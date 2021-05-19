@@ -12,6 +12,7 @@ document.querySelector("#submitFormButton").onclick = function(){
     console.log("phone" + document.querySelector("#phone").value);
     console.log("phone access" + document.querySelector("#phoneAccess").value);
     console.log("calendar access " + document.querySelector("#calendarAccess").value);
+    console.log("password :" + document.querySelector("#password").value);
 }
 
 this.eventName = 'Second Vaccine Dose';

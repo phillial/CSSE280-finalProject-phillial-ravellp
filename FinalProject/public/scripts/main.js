@@ -120,6 +120,8 @@ rhit.initializePage = function () {
 			}
 
 		} else {
+
+			//what to do when you hit the submit button 
 			document.querySelector("#submitFormButton").onclick = async function () {
 				const fname = document.querySelector("#fname").value;
 				const lname = document.querySelector("#lname").value;

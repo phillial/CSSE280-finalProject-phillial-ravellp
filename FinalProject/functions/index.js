@@ -19,8 +19,8 @@ exports.scheduledFunctionPlainEnglish = functions.pubsub.schedule('every 1 minut
         querySnapshot.forEach((_doc) => {
             // console.log(doc.id, " => ", doc.data());
             console.log("got into querySpanshot no problemo");
-            const sendDate = _doc.get(secondDoseDate);
-            const sendTime = _doc.get(secondDoseTime);
+            const sendDate = _doc.get("secondDoseDate");
+            const sendTime = _doc.get("secondDoseTime");
             console.log("just tryed a doc.get()");
             const curDate = firebase.firestore.Timestamp.toDate();
             console.log("just did a timestamp.toDate()");

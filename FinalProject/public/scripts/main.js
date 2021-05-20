@@ -6,8 +6,9 @@ rhit.FB_KEY_LASTNAME = "LastName";
 rhit.FB_KEY_EMAIL = "Email";
 rhit.FB_KEY_PASSWORD = "Password";
 rhit.FB_KEY_PHONE = "PhoneNumber";
-rhit.FB_KEY_ADDRESS = "address";
-rhit.FB_KEY_ACCESSPHONE = "accessToPhone"
+rhit.FB_KEY_ADDRESSONE = "addressOne";
+rhit.FB_KEY_ADDRESSTWO = "addressTwo";
+rhit.FB_KEY_ACCESSPHONE = "phoneAccess"
 rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
 rhit.FB_KEY_FIRSTDOSETIME = "firstDoseTime";
 rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
@@ -60,65 +61,80 @@ rhit.initializePage = function () {
 				const fname = this._doc.get(rhit.FB_KEY_FIRSTNAME);
 				const lname = this._doc.get(rhit.FB_KEY_LASTNAME);
 				const vaccine = this._doc.get(rhit.FB_KEY_VACCINENAME);
-				const address = this._doc.get(rhit.FB_KEY_ADDRESS);
+				const addressOne = this._doc.get(rhit.FB_KEY_ADDRESSONE);
+				const addressTwo = this._doc.get(rhit.FB_KEY_ADDRESSTWO);
 				const fdate = this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE);
 				const ftime = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
 				const sdate = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
 				const stime = this._doc.get(rhit.FB_KEY_SECONDDOSETIME)
 				const phone = this._doc.get(rhit.FB_KEY_PHONE);
+				const phoneAccess = this._doc.get(rhit.FB_KEY_ACCESSPHONE);
 
 				document.querySelector("#email").value = email;
 				document.querySelector("#fname").value = fname;
 				document.querySelector("#lname").value = lname;
-				document.querySelector("#address").value = address;
+				document.querySelector("#addressOne").value = addressOne;
+				document.querySelector("#addressTwo").value = addressTwo;
 				document.querySelector("#firstDate").value = fdate;
 				document.querySelector("#firstDoseTime").value = ftime;
 				document.querySelector("#secondDate").value = sdate;
 				document.querySelector("#secondDoseTime").value = stime;
 				document.querySelector("#vaccineType").value = vaccine;
 				document.querySelector("#phone").value = phone;
+
+				if (phoneAccess) { // might not be right way of doing this
+					document.querySelector("#phoneAccess").value = "Yes";
+				} else {
+					document.querySelector("#phoneAccess").value = "No";
+				}
 				
 				document.querySelector("#emailPasswordContainer").hidden = true; //might not be right
 				// document.querySelector("#password").disabled = true; //might not be right
 			});
-			// this._unsubscribe();
 
 			document.querySelector("#submitFormButton").onclick = async function () {
 				document.querySelector("#emailPasswordContainer").hidden = false;
 				const fname = document.querySelector("#fname").value;
 				const lname = document.querySelector("#lname").value;
 				const email = document.querySelector("#email").value;
-				const address = document.querySelector("#address").value;
+				const addressOne = document.querySelector("#addressOne").value;
+				const addressTwo = document.querySelector("#addressTwo").value;
 				const fdate = document.querySelector("#firstDate").value;
 				const ftime = document.querySelector("#firstDoseTime").value;
 				const sdate = document.querySelector("#secondDate").value;
 				const stime = document.querySelector("#secondDoseTime").value;
 				const vaccine = document.querySelector("#vaccineType").value;
 				const phone = document.querySelector("#phone").value;
+				const phoneAccess = Boolean(false);
+				if (document.querySelector("#phoneAccess").value == "Yes") {
+					phoneAccess = Boolean(true);
+				}
 
 				await firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid).set({
 					[rhit.FB_KEY_FIRSTNAME]: fname,
 					[rhit.FB_KEY_LASTNAME]: lname,
 					[rhit.FB_KEY_EMAIL]: email,
 					[rhit.FB_KEY_PHONE]: phone,
-					[rhit.FB_KEY_ADDRESS]: address,
+					[rhit.FB_KEY_ADDRESSONE]: addressOne,
+					[rhit.FB_KEY_ADDRESSTWO]: addressTwo,
 					[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
 					[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
 					[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
 					[rhit.FB_KEY_SECONDDOSETIME]: stime,
-					[rhit.FB_KEY_VACCINENAME]: vaccine
+					[rhit.FB_KEY_VACCINENAME]: vaccine,
+					[rhit.FB_KEY_ACCESSPHONE]: phoneAccess
 				});
 				window.location.href = `/information.html?uid=${uid}`;
 			}
 
 		} else {
-
 			//what to do when you hit the submit button 
 			document.querySelector("#submitFormButton").onclick = async function () {
 				const fname = document.querySelector("#fname").value;
 				const lname = document.querySelector("#lname").value;
 				const email = document.querySelector("#email").value
-				const address = document.querySelector("#address").value;
+				const addressOne = document.querySelector("#addressOne").value;
+				const addressTwo = document.querySelector("#addressTwo").value;
 				const fdate = document.querySelector("#firstDate").value;
 				const ftime = document.querySelector("#firstDoseTime").value;
 				const sdate = document.querySelector("#secondDate").value;
@@ -126,6 +142,7 @@ rhit.initializePage = function () {
 				const vaccine = document.querySelector("#vaccineType").value;
 				const phone = document.querySelector("#phone").value;
 				const password = document.querySelector("#password").value;	
+				const phoneAccess = document.querySelector("#phoneAccess").value;
 
 				await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
 					var errorCode = error.code;
@@ -137,12 +154,14 @@ rhit.initializePage = function () {
 						[rhit.FB_KEY_LASTNAME]: lname,
 						[rhit.FB_KEY_EMAIL]: email,
 						[rhit.FB_KEY_PHONE]: phone,
-						[rhit.FB_KEY_ADDRESS]: address,
+						[rhit.FB_KEY_ADDRESSONE]: addressOne,
+						[rhit.FB_KEY_ADDRESSTWO]: addressTwo,
 						[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
 						[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
 						[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
 						[rhit.FB_KEY_SECONDDOSETIME]: stime,
-						[rhit.FB_KEY_VACCINENAME]: vaccine
+						[rhit.FB_KEY_VACCINENAME]: vaccine,
+						[rhit.FB_KEY_ACCESSPHONE]: phoneAccess
 					});
 				}).catch(function (error) {
 					console.error("Error adding document: ", error);
@@ -172,12 +191,16 @@ rhit.initializePage = function () {
 			document.querySelector("#Vaccine").innerHTML = this._doc.get(rhit.FB_KEY_VACCINENAME);
 			document.querySelector("#DateOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE);
 			document.querySelector("#TimeOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
-			document.querySelector("#AddressOne").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESS);
+			document.querySelector("#AddressOne").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESSONE);
 			document.querySelector("#DateTwo").innerHTML = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
 			document.querySelector("#TimeTwo").innerHTML =this._doc.get(rhit.FB_KEY_SECONDDOSETIME);
-			document.querySelector("#AddressTwo").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESS);
+			document.querySelector("#AddressTwo").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESSTWO);
+			if (this._doc.get(rhit.FB_KEY_ACCESSPHONE)) { // 'value' might not be right
+				document.querySelector("#phoneAccess").innerHTML = "Yes";
+			} else {
+				document.querySelector("#phoneAccess").innerHTML = "No";
+			}
 			});
-
 
 
 		document.querySelector("#logout").onclick = function () {

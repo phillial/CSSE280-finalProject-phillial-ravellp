@@ -108,14 +108,6 @@ rhit.initializePage = function () {
 					[rhit.FB_KEY_SECONDDOSETIME]: stime,
 					[rhit.FB_KEY_VACCINENAME]: vaccine
 				});
-				// await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
-				// 	var errorCode = error.code;
-				// 	var errorMessage = error.message;
-				// 	console.log("sign-in error ", errorCode, errorMessage);
-				// }).then((_user) => {
-				// }).catch(function (error) {
-				// 	console.error("Error adding document: ", error);
-				// });			
 				window.location.href = `/information.html?uid=${uid}`;
 			}
 

@@ -83,11 +83,10 @@ exports.scheduledFunctionPlainEnglish = functions.pubsub.schedule('every 1 minut
                 if (phoneAccess) {
                     // console.log("Signed up for text notifications");
 
-                    
                     // Send the text message.
                     client.messages.create({
-                        to: '15714476016',
-                        from: '18436957763',
+                        to: '+15714476016',
+                        from: '+18436957763',
                         body: 'Hello from Twilio!'
 
                         // "Hello, " + fName + " " + lName + ", you reported that you recieved your first dose of the " +

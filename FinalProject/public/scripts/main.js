@@ -105,7 +105,7 @@ rhit.initializePage = function () {
 				const stime = document.querySelector("#secondDoseTime").value;
 				const vaccine = document.querySelector("#vaccineType").value;
 				const phone = document.querySelector("#phone").value;
-				const phoneAccess = Boolean(false);
+				let phoneAccess = Boolean(false);
 				if (document.querySelector("#phoneAccess").value == "Yes") {
 					phoneAccess = Boolean(true);
 				}
@@ -142,8 +142,11 @@ rhit.initializePage = function () {
 				const vaccine = document.querySelector("#vaccineType").value;
 				const phone = document.querySelector("#phone").value;
 				const password = document.querySelector("#password").value;	
-				const phoneAccess = document.querySelector("#phoneAccess").value;
-
+				let phoneAccess = Boolean(false);
+				if (document.querySelector("#phoneAccess").value == "Yes") {
+					phoneAccess = Boolean(true);
+				}
+				
 				await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
 					var errorCode = error.code;
 					var errorMessage = error.message;
@@ -315,6 +318,7 @@ rhit.main = function () {
 
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening((params) => {
+		rhit.fbAuthManager.signOut; // get rid of this if you use checkForRedirects
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 
 		// rhit.checkForRedirects();

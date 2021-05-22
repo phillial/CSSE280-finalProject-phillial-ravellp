@@ -1,14 +1,13 @@
 var rhit = rhit || {};
 rhit.FB_COLLECTION_PERSONALINFORMATION = "PersonalInformation";
-rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_FIRSTNAME = "FirstName";
 rhit.FB_KEY_LASTNAME = "LastName";
 rhit.FB_KEY_EMAIL = "Email";
 rhit.FB_KEY_PASSWORD = "Password";
-rhit.FB_KEY_PHONE = "PhoneNumber";
+// rhit.FB_KEY_PHONE = "PhoneNumber";
 rhit.FB_KEY_ADDRESSONE = "addressOne";
 rhit.FB_KEY_ADDRESSTWO = "addressTwo";
-rhit.FB_KEY_ACCESSPHONE = "phoneAccess"
+// rhit.FB_KEY_ACCESSPHONE = "phoneAccess";
 rhit.FB_KEY_FIRSTDOSEDATE = "firstDoseDate";
 rhit.FB_KEY_FIRSTDOSETIME = "firstDoseTime";
 rhit.FB_KEY_SECONDDOSEDATE = "secondDoseDate";
@@ -33,13 +32,13 @@ rhit.checkForRedirects = function () {
 	if (document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn) {
 		window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
 	}
-	if (!document.querySelector("#loginPage") && !rhit.fbAuthManager.isSignedIn) {
-		window.location.href = "/";
-	}
-	if (document.querySelector("#informationPage") && rhit.personalInfo == null) {
-		console.log("big problems in info page, the personalInfo thing doesent exsist!");
-		window.location.href = "/";
-	}
+	// if (!document.querySelector("#loginPage") && !rhit.fbAuthManager.isSignedIn) {
+	// 	window.location.href = "/";
+	// }
+	// if (document.querySelector("#informationPage") && rhit.personalInfo == null) {
+	// 	console.log("big problems in info page, the personalInfo thing doesent exsist!");
+	// 	window.location.href = "/";
+	// }
 }
 
 
@@ -67,8 +66,8 @@ rhit.initializePage = function () {
 				const ftime = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
 				const sdate = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
 				const stime = this._doc.get(rhit.FB_KEY_SECONDDOSETIME)
-				const phone = this._doc.get(rhit.FB_KEY_PHONE);
-				const phoneAccess = this._doc.get(rhit.FB_KEY_ACCESSPHONE);
+				// const phone = this._doc.get(rhit.FB_KEY_PHONE);
+				// const phoneAccess = this._doc.get(rhit.FB_KEY_ACCESSPHONE);
 
 				document.querySelector("#email").value = email;
 				document.querySelector("#fname").value = fname;
@@ -80,17 +79,23 @@ rhit.initializePage = function () {
 				document.querySelector("#secondDate").value = sdate;
 				document.querySelector("#secondDoseTime").value = stime;
 				document.querySelector("#vaccineType").value = vaccine;
-				document.querySelector("#phone").value = phone;
+				// document.querySelector("#phone").value = phone;
 
-				if (phoneAccess) { // might not be right way of doing this
-					document.querySelector("#phoneAccess").value = "Yes";
-				} else {
-					document.querySelector("#phoneAccess").value = "No";
-				}
+				// if (phoneAccess) { // might not be right way of doing this
+				// 	document.querySelector("#phoneAccess").value = "Yes";
+				// } else {
+				// 	document.querySelector("#phoneAccess").value = "No";
+				// }
 				
 				document.querySelector("#emailPasswordContainer").hidden = true; //might not be right
 				// document.querySelector("#password").disabled = true; //might not be right
+
+				
 			});
+
+			// document.querySelector("#backButton").onclick = async function() {
+			// 	window.location.href = `/information.html?uid=${uid}`;
+			// }
 
 			document.querySelector("#submitFormButton").onclick = async function () {
 				document.querySelector("#emailPasswordContainer").hidden = false;
@@ -104,25 +109,25 @@ rhit.initializePage = function () {
 				const sdate = document.querySelector("#secondDate").value;
 				const stime = document.querySelector("#secondDoseTime").value;
 				const vaccine = document.querySelector("#vaccineType").value;
-				const phone = document.querySelector("#phone").value;
-				let phoneAccess = Boolean(false);
-				if (document.querySelector("#phoneAccess").value == "Yes") {
-					phoneAccess = Boolean(true);
-				}
+				// const phone = document.querySelector("#phone").value;
+				// let phoneAccess = Boolean(false);
+				// if (document.querySelector("#phoneAccess").value == "Yes") {
+				// 	phoneAccess = Boolean(true);
+				// }
 
 				await firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(uid).set({
 					[rhit.FB_KEY_FIRSTNAME]: fname,
 					[rhit.FB_KEY_LASTNAME]: lname,
 					[rhit.FB_KEY_EMAIL]: email,
-					[rhit.FB_KEY_PHONE]: phone,
+					// [rhit.FB_KEY_PHONE]: phone,
 					[rhit.FB_KEY_ADDRESSONE]: addressOne,
 					[rhit.FB_KEY_ADDRESSTWO]: addressTwo,
 					[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
 					[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
 					[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
 					[rhit.FB_KEY_SECONDDOSETIME]: stime,
-					[rhit.FB_KEY_VACCINENAME]: vaccine,
-					[rhit.FB_KEY_ACCESSPHONE]: phoneAccess
+					[rhit.FB_KEY_VACCINENAME]: vaccine
+					// [rhit.FB_KEY_ACCESSPHONE]: phoneAccess
 				});
 				window.location.href = `/information.html?uid=${uid}`;
 			}
@@ -140,38 +145,48 @@ rhit.initializePage = function () {
 				const sdate = document.querySelector("#secondDate").value;
 				const stime = document.querySelector("#secondDoseTime").value;
 				const vaccine = document.querySelector("#vaccineType").value;
-				const phone = document.querySelector("#phone").value;
 				const password = document.querySelector("#password").value;	
-				let phoneAccess = Boolean(false);
-				if (document.querySelector("#phoneAccess").value == "Yes") {
-					phoneAccess = Boolean(true);
-				}
+				// const phone = document.querySelector("#phone").value;
+				// let phoneAccess = Boolean(false);
+				// if (document.querySelector("#phoneAccess").value == "Yes") {
+				// 	phoneAccess = Boolean(true);
+				// }
 				
 				await firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
 					var errorCode = error.code;
 					var errorMessage = error.message;
 					console.log("sign-in error ", errorCode, errorMessage);
 				}).then((_user) => {
+					console.log("got here");
 					firebase.firestore().collection(rhit.FB_COLLECTION_PERSONALINFORMATION).doc(_user.user.uid).set({
 						[rhit.FB_KEY_FIRSTNAME]: fname,
 						[rhit.FB_KEY_LASTNAME]: lname,
 						[rhit.FB_KEY_EMAIL]: email,
-						[rhit.FB_KEY_PHONE]: phone,
+						// [rhit.FB_KEY_PHONE]: phone,
 						[rhit.FB_KEY_ADDRESSONE]: addressOne,
 						[rhit.FB_KEY_ADDRESSTWO]: addressTwo,
 						[rhit.FB_KEY_FIRSTDOSEDATE]: fdate,
 						[rhit.FB_KEY_FIRSTDOSETIME]: ftime,
 						[rhit.FB_KEY_SECONDDOSEDATE]: sdate,
 						[rhit.FB_KEY_SECONDDOSETIME]: stime,
-						[rhit.FB_KEY_VACCINENAME]: vaccine,
-						[rhit.FB_KEY_ACCESSPHONE]: phoneAccess
+						[rhit.FB_KEY_VACCINENAME]: vaccine
+						// [rhit.FB_KEY_ACCESSPHONE]: phoneAccess
 					});
 				}).catch(function (error) {
 					console.error("Error adding document: ", error);
 				});			
 				window.location.href = `/information.html?uid=${rhit.fbAuthManager.uid}`;
 			}
+
+			// document.querySelector("#backButton").onclick = async function() {
+			// 	firebase.auth().signOut().catch((error) => {
+			// 		console.log("Sign out error");
+			// 	}); 
+			// 	window.location.href = `/index.html`;
+			// }
 		}
+
+		
 	}
 
 
@@ -190,7 +205,7 @@ rhit.initializePage = function () {
 
 			document.querySelector("#Name").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTNAME) + " " + this._doc.get(rhit.FB_KEY_LASTNAME);
 			document.querySelector("#Email").innerHTML = this._doc.get(rhit.FB_KEY_EMAIL);
-			document.querySelector("#Phone").innerHTML = this._doc.get(rhit.FB_KEY_PHONE);
+			// document.querySelector("#Phone").innerHTML = this._doc.get(rhit.FB_KEY_PHONE);
 			document.querySelector("#Vaccine").innerHTML = this._doc.get(rhit.FB_KEY_VACCINENAME);
 			document.querySelector("#DateOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSEDATE);
 			document.querySelector("#TimeOne").innerHTML = this._doc.get(rhit.FB_KEY_FIRSTDOSETIME);
@@ -198,11 +213,11 @@ rhit.initializePage = function () {
 			document.querySelector("#DateTwo").innerHTML = this._doc.get(rhit.FB_KEY_SECONDDOSEDATE);
 			document.querySelector("#TimeTwo").innerHTML =this._doc.get(rhit.FB_KEY_SECONDDOSETIME);
 			document.querySelector("#AddressTwo").innerHTML = this._doc.get(rhit.FB_KEY_ADDRESSTWO);
-			if (this._doc.get(rhit.FB_KEY_ACCESSPHONE)) { // 'value' might not be right
-				document.querySelector("#phoneAccess").innerHTML = "Yes";
-			} else {
-				document.querySelector("#phoneAccess").innerHTML = "No";
-			}
+			// if (this._doc.get(rhit.FB_KEY_ACCESSPHONE)) { // 'value' might not be right
+			// 	document.querySelector("#phoneAccess").innerHTML = "Yes";
+			// } else {
+			// 	document.querySelector("#phoneAccess").innerHTML = "No";
+			// }
 			});
 
 
@@ -256,21 +271,21 @@ rhit.initializePage = function () {
 }
 
 
-rhit.PersonalInformation = class {
-	constructor(id, firstName, lastName, email, phone, address, firstDoseDate, firstDoseTime, secondDoseDate, secondDoseTime, vaccine ) {
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phone = phone;
-		this.address = address;
-		this.firstDoseDate = firstDoseDate;
-		this.firstDoseTime = firstDoseTime;
-		this.secondDoseDate = secondDoseDate;
-		this.secondDoseTime = secondDoseTime;
-		this.vaccine = vaccine;
-	}
-}
+// rhit.PersonalInformation = class {
+// 	constructor(id, firstName, lastName, email, phone, address, firstDoseDate, firstDoseTime, secondDoseDate, secondDoseTime, vaccine ) {
+// 		this.id = id;
+// 		this.firstName = firstName;
+// 		this.lastName = lastName;
+// 		this.email = email;
+// 		this.phone = phone;
+// 		this.address = address;
+// 		this.firstDoseDate = firstDoseDate;
+// 		this.firstDoseTime = firstDoseTime;
+// 		this.secondDoseDate = secondDoseDate;
+// 		this.secondDoseTime = secondDoseTime;
+// 		this.vaccine = vaccine;
+// 	}
+// }
 
 
 
@@ -315,10 +330,14 @@ rhit.FbAuthManager = class {
 /** function and class syntax examples */
 rhit.main = function () {
 	console.log("Ready");
-
+	
+	// firebase.auth().signOut().catch((error) => {
+	// 	console.log("Sign out error");
+	// }); 
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening((params) => {
-		rhit.fbAuthManager.signOut; // get rid of this if you use checkForRedirects
+		// get rid of this if you use checkForRedirects
+		
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 
 		// rhit.checkForRedirects();
